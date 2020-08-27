@@ -3,7 +3,16 @@
     "version": "0.1.0",
     "description": "",
     "main": "index.js",
-    "scripts": {},
+    "scripts": {
+        "watch-ts": "tsc -w",
+        "watch-node": "nodemon dist/server.js",
+        "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript, Node\" -c \"yellow.bold, cyan.bold\" \"yarn run watch-ts\" \"yarn run watch-node\""
+    },
     "author": "André Vicente",
-    "license": "MIT"
+    "license": "MIT",
+    "dependencies": {
+        "@types/express": "^4.17.7",
+        "concurrently": "^5.3.0",
+        "express": "^4.17.1"
+    }
 }
