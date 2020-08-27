@@ -1,0 +1,9 @@
+{
+    "name": "users-line-rpc-api",
+    "version": "0.1.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {},
+    "author": "André Vicente",
+    "license": "MIT"
+}
