@@ -1,5 +1,6 @@
 import express = require("express");
 import { createUser, listUsers } from "./models/user";
+import { addUserToLine } from "./models/line";
 
 const app = express();
 app.use(express.json());
@@ -43,7 +44,11 @@ app.post("/createUser", (req, res) => {
 
 app.get("/listUsers", (req, res) => {
     res.json(listUsers())
-})
+});
 
+app.post("/addToLine", (req, res) => {
+    let id: number = req.body.id;
+    res.json(addUserToLine(id));
+});
 
 export default app;
