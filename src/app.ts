@@ -1,6 +1,6 @@
 import express = require("express");
 import { createUser, listUsers } from "./models/user";
-import { addUserToLine } from "./models/line";
+import { addUserToLine, showLine, findPosition, filterLine } from "./models/line";
 
 const app = express();
 app.use(express.json());
@@ -51,4 +51,17 @@ app.post("/addToLine", (req, res) => {
     res.json(addUserToLine(id));
 });
 
+app.post("/findPosition", (req, res) => {
+    let email: string = req.body.email;
+    res.json(findPosition(email));
+});
+
+app.post("/filterLine", (req, res) => {
+    let gender: string = req.body.gender;
+    res.json(filterLine(gender));
+});
+
+app.get("/showLine", (req, res) => {
+    res.json(showLine())
+})
 export default app;

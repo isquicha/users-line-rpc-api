@@ -4,7 +4,7 @@ let user_list: any[] = [];
 let last_id = 0;
 
 
-class User {
+export class User {
     static _id: number = last_id;
     #id: number;
     name: string;
