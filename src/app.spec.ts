@@ -149,7 +149,7 @@ describe("Create user", () => {
             })
     });
     it("Should return missing_name, missing_email and\
-    \rmissing_gender if no name, email and gender are given", async () => {
+    \b\b\bmissing_gender if no name, email and gender are given", async () => {
         return chai
             .request(app)
             .post("/createUser")
@@ -203,4 +203,70 @@ describe("Create user", () => {
                 expect(json_string).to.deep.equal([person_one, person_two, local_person_three]);
             })
     });
-})
+});
+
+describe("Add to line", () => {
+    const invalid_user_id = {
+        "invalid_user_id": "The user with the given id does not exists!"
+    }
+    const user_already_on_line = {
+        "user_already_on_line": "This user is already on the Line!"
+    }
+    it("Should return position 0 for the first user added to the Line", async () => {
+        return chai
+            .request(app)
+            .post("/addToLine")
+            .send({ "id": 0 })
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.eql({ "position": 0 });
+            })
+    });
+    it("Should return position 1 for the second user added to the Line", async () => {
+        return chai
+            .request(app)
+            .post("/addToLine")
+            .send({ "id": 1 })
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.eql({ "position": 1 });
+            });
+    });
+    it("Should return position 2 for the third user added to the Line", async () => {
+        return chai
+            .request(app)
+            .post("/addToLine")
+            .send({ "id": 2 })
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.eql({ "position": 2 });
+            });
+    });
+    it("Should return invalid user id when trying to add\
+    \b\b\ban invalid user id to the Line", async () => {
+        return chai
+            .request(app)
+            .post("/addToLine")
+            .send({ "id": 10 })
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.eql(invalid_user_id);
+            });
+    });
+    it("Should return user already on line when trying to add\
+    \b\b\ban user that already is on the Line", async () => {
+        return chai
+            .request(app)
+            .post("/addToLine")
+            .send({ "id": 2 })
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.eql(user_already_on_line);
+            });
+    });
+});

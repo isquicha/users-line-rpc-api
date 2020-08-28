@@ -33,7 +33,7 @@ export const findPosition = (user_email: string) => {
     return invalid_user_email;
 }
 
-export const addUserToLine = (user_id: number) => {
+export const addToLine = (user_id: number) => {
     const user = getUser(user_id);
     if (user) {
         if (JSON.stringify(findPosition(user.email)) === JSON.stringify(invalid_user_email)) {
