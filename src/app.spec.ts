@@ -462,5 +462,145 @@ describe("Filter line", () => {
     });
 });
 
+describe("Show line and pop line", () => {
+    // A lot of comparison variables because the tests are asynchronous
+    // The comparison variables must not be modified during the running of the tests
 
+    let local_first_person_one: any = JSON.parse(JSON.stringify(person_one));
+    let local_first_person_two: any = JSON.parse(JSON.stringify(person_two));
+    let local_first_person_three: any = JSON.parse(JSON.stringify(person_three));
+    let local_first_person_four: any = JSON.parse(JSON.stringify(person_four));
+    local_first_person_one.position = 0;
+    local_first_person_two.position = 1;
+    local_first_person_three.position = 2;
+    local_first_person_three.gender = 'other';
+    local_first_person_four.position = 3;
+
+    let local_second_person_two: any = JSON.parse(JSON.stringify(person_two));
+    let local_second_person_three: any = JSON.parse(JSON.stringify(person_three));
+    let local_second_person_four: any = JSON.parse(JSON.stringify(person_four));
+    local_second_person_two.position = 0;
+    local_second_person_three.position = 1;
+    local_second_person_three.gender = 'other';
+    local_second_person_four.position = 2;
+
+    let local_third_person_three: any = JSON.parse(JSON.stringify(person_three));
+    let local_third_person_four: any = JSON.parse(JSON.stringify(person_four));
+    local_third_person_three.position = 0;
+    local_third_person_three.gender = 'other';
+    local_third_person_four.position = 1;
+
+    let local_fourth_person_four: any = JSON.parse(JSON.stringify(person_four));
+    local_fourth_person_four.position = 0;
+
+    const empty_line = {
+        "empty_line": "The line is empty!"
+    }
+
+    it("Should return all users in the Line when get /showLine", async () => {
+        return chai
+            .request(app)
+            .get("/showLine")
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.deep.equal([
+                    local_first_person_one, local_first_person_two,
+                    local_first_person_three, local_first_person_four
+                ]);
+            })
+    });
+    it("Should return Person One when get /popLine", async () => {
+        return chai
+            .request(app)
+            .get("/popLine")
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.deep.equal(person_one);
+            })
+    });
+    it("Should update Line order after get /popLine when get /showLine", async () => {
+        return chai
+            .request(app)
+            .get("/showLine")
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.deep.equal([
+                    local_second_person_two,
+                    local_second_person_three,
+                    local_second_person_four
+                ]);
+            })
+    });
+    it("Should return Person Two when get /popLine again", async () => {
+        return chai
+            .request(app)
+            .get("/popLine")
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.deep.equal(person_two);
+            })
+    });
+    it("Should update Line order again after another get\
+    \b\b\bpopLine when get /showLine", async () => {
+        return chai
+            .request(app)
+            .get("/showLine")
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.deep.equal([
+                    local_third_person_three,
+                    local_third_person_four
+                ]);
+            })
+    });
+    it("Should return Person Three when get /popLine again", async () => {
+        return chai
+            .request(app)
+            .get("/popLine")
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.deep.equal(person_three);
+            })
+    });
+    it("Should update Line order again after another get\
+    \b\b\bpopLine when get /showLine", async () => {
+        return chai
+            .request(app)
+            .get("/showLine")
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.deep.equal([
+                    local_fourth_person_four
+                ]);
+            })
+    });
+    it("Should return Person Four when get /popLine again", async () => {
+        return chai
+            .request(app)
+            .get("/popLine")
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.deep.equal(person_four);
+            })
+    });
+    it("Should get empty_line after the last get /popLine when get /showLine", async () => {
+        return chai
+            .request(app)
+            .get("/showLine")
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.deep.equal(empty_line);
+            })
+    });
+
+});
 // TODO: separate procedures that will work from those that will go wrong
