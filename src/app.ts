@@ -69,7 +69,22 @@ app.post("/addToLine", (req, res) => {
 
 app.post("/findPosition", (req, res) => {
     let email: string = req.body.email;
-    res.json(findPosition(email));
+    let error = {
+        "has_error": false,
+        "error_list": Array()
+    };
+    if (email == undefined) {
+        error.has_error = true;
+        error.error_list.push({
+            "missing_email": "You must provide an email for the search in the List!"
+        })
+    }
+    if (error.has_error) {
+        res.status(400).json(["You made a bad request!", error.error_list]);
+    }
+    else {
+        res.json(findPosition(email));
+    }
 });
 
 app.post("/filterLine", (req, res) => {

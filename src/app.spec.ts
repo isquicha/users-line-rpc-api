@@ -285,3 +285,68 @@ describe("Add to line", () => {
     });
 });
 
+describe("Find position", () => {
+    const missing_email = {
+        "missing_email": "You must provide an email for the search in the List!"
+    }
+    const invalid_user_email = {
+        "invalid_user_email": "The user with the given email does not exists or is not on the Line!",
+        "position": "undefined"
+    }
+
+    it("Should return position 0 for the first user added to the Line", async () => {
+        return chai
+            .request(app)
+            .post("/findPosition")
+            .send({ "email": "personone@mail.com" })
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.eql({ "position": 0 });
+            })
+    });
+    it("Should return position 1 for the second user added to the Line", async () => {
+        return chai
+            .request(app)
+            .post("/findPosition")
+            .send({ "email": "persontwo@mail.com" })
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.eql({ "position": 1 });
+            })
+    });
+    it("Should return position 2 for the third user added to the Line", async () => {
+        return chai
+            .request(app)
+            .post("/findPosition")
+            .send({ "email": "personthree@mail.com" })
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.eql({ "position": 2 });
+            })
+    });
+    it("Should return invalid_user_email if no user with this email exists", async () => {
+        return chai
+            .request(app)
+            .post("/findPosition")
+            .send({ "email": "invalidemail@mail.com" })
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.deep.equal(invalid_user_email);
+            })
+    });
+    it("Should return missing_email if no email is given", async () => {
+        return chai
+            .request(app)
+            .post("/findPosition")
+            .send({})
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(400);
+                expect(json_string).to.deep.equal([error_string, [missing_email]]);
+            })
+    });
+});
