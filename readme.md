@@ -5,3 +5,14 @@ This API manages a Line (queue) of people. Allows user creation, adding a user t
 ## Documentation
 Docs can be found at [Postman Documenter](https://documenter.getpostman.com/view/12511871/TVCcWTzG).
 
+## Dependencies 
+Nodejs
+Express
+Yarn
+
+## Installation
+`yarn install`
+
+## Run
+Server `yarn run watch`
+Tests `yarn run test`
