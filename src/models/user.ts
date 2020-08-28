@@ -5,7 +5,7 @@ let last_id = 0;
 
 
 class User {
-    static _id: number = last_id + 1;
+    static _id: number = last_id;
     #id: number;
     name: string;
     email: string;
