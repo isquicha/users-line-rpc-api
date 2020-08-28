@@ -19,6 +19,7 @@ const empty_gender_filter = {
 }
 
 export const findPosition = (user_email: string) => {
+    user_email = user_email.toLowerCase();
     let position = 0;
     // for ... of scrolls through the list in order, so i don't have to 
     // store the position of each user
@@ -62,10 +63,11 @@ export const showLine = () => {
     return empty_line;
 }
 
-export const filterLine = (gender: string) => {
+export const filterLine = (user_gender: string) => {
+    user_gender = user_gender.toLowerCase();
     const l = line
         .filter((user: User) => {
-            return user.gender === gender;
+            return user.gender === user_gender;
         })
         .map((user: User) => {
             let local_user: any = JSON.parse(JSON.stringify(user));

@@ -330,7 +330,7 @@ describe("Find position", () => {
         return chai
             .request(app)
             .post("/findPosition")
-            .send({ "email": "personone@mail.com" })
+            .send({ "email": "PERSONONE@mail.com" })
             .then(res => {
                 let json_string = JSON.parse(res.text);
                 expect(res.status).to.eql(200);
@@ -407,7 +407,7 @@ describe("Filter line", () => {
         return chai
             .request(app)
             .post("/filterLine")
-            .send({ "gender": "male" })
+            .send({ "gender": "MALE" })
             .then(res => {
                 let json_string = JSON.parse(res.text);
                 expect(res.status).to.eql(200);
