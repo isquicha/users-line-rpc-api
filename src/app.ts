@@ -76,7 +76,7 @@ app.post("/findPosition", (req, res) => {
     if (email == undefined) {
         error.has_error = true;
         error.error_list.push({
-            "missing_email": "You must provide an email for the search in the List!"
+            "missing_email": "You must provide an email for the search in the Line!"
         })
     }
     if (error.has_error) {
@@ -89,7 +89,22 @@ app.post("/findPosition", (req, res) => {
 
 app.post("/filterLine", (req, res) => {
     let gender: string = req.body.gender;
-    res.json(filterLine(gender));
+    let error = {
+        "has_error": false,
+        "error_list": Array()
+    };
+    if (gender == undefined) {
+        error.has_error = true;
+        error.error_list.push({
+            "missing_gender": "You must provide a gender for filtering the Line!"
+        })
+    }
+    if (error.has_error) {
+        res.status(400).json(["You made a bad request!", error.error_list]);
+    }
+    else {
+        res.json(filterLine(gender));
+    }
 });
 
 app.get("/popLine", (req, res) => {

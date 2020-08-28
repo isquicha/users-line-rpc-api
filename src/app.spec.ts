@@ -7,26 +7,33 @@ chai.use(chaiHttp);
 const expect = chai.expect;
 let error_string = "You made a bad request!";
 
+const person_one = {
+    "name": "Person One",
+    "email": "personone@mail.com",
+    "gender": "male"
+};
+const person_two = {
+    "name": "Person Two",
+    "email": "persontwo@mail.com",
+    "gender": "female"
+};
+const person_three = {
+    "name": "Person Three",
+    "email": "personthree@mail.com",
+    "gender": "ufutfyj"
+};
+const person_four = {
+    "name": "Person Four",
+    "email": "personfour@mail.com",
+    "gender": "female"
+};
+
 describe("Create user", () => {
     let missing_email = { "missing_email": "You must provide a email for the user!" };
     let missing_name = { "missing_name": "You must provide a name for the user!" };
     let missing_gender = { "missing_gender": "You must provide a gender for the user!" };
     let user_exists = { "user_already_exists": "This user name or user email is already registered!" };
-    let person_one = {
-        "name": "Person One",
-        "email": "personone@mail.com",
-        "gender": "male"
-    };
-    let person_two = {
-        "name": "Person Two",
-        "email": "persontwo@mail.com",
-        "gender": "female"
-    };
-    let person_three = {
-        "name": "Person Three",
-        "email": "personthree@mail.com",
-        "gender": "ufutfyj"
-    };
+
 
     it("Should return created user one info json on call", async () => {
         return chai
@@ -65,6 +72,20 @@ describe("Create user", () => {
                 let json_string = JSON.parse(res.text);
                 expect(res.status).to.eql(200);
                 expect(json_string.gender).to.eql("other");
+            })
+    });
+    it("Should return created user two info json on call", async () => {
+        return chai
+            .request(app)
+            .post("/createUser")
+            .send(person_four)
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string.id).to.eql(3);
+                expect(json_string.email).to.eql(person_four.email);
+                expect(json_string.gender).to.eql(person_four.gender);
+                expect(json_string.name).to.eql(person_four.name);
             })
     });
     it("Should return missing_name if no name is given", async () => {
@@ -200,7 +221,7 @@ describe("Create user", () => {
                 let local_person_three = person_three;
                 local_person_three.gender = "other";
                 expect(res.status).to.eql(200);
-                expect(json_string).to.deep.equal([person_one, person_two, local_person_three]);
+                expect(json_string).to.deep.equal([person_one, person_two, local_person_three, person_four]);
             })
     });
 });
@@ -208,13 +229,13 @@ describe("Create user", () => {
 describe("Add to line", () => {
     const invalid_user_id = {
         "invalid_user_id": "The user with the given id does not exists!"
-    }
+    };
     const user_already_on_line = {
         "user_already_on_line": "This user is already on the Line!"
-    }
+    };
     const missing_id = {
         "missing_id": "You must provide an user id to be added to the line!"
-    }
+    };
     it("Should return position 0 for the first user added to the Line", async () => {
         return chai
             .request(app)
@@ -246,6 +267,17 @@ describe("Add to line", () => {
                 let json_string = JSON.parse(res.text);
                 expect(res.status).to.eql(200);
                 expect(json_string).to.eql({ "position": 2 });
+            });
+    });
+    it("Should return position 3 for the fourth user added to the Line", async () => {
+        return chai
+            .request(app)
+            .post("/addToLine")
+            .send({ "id": 3 })
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.eql({ "position": 3 });
             });
     });
     it("Should return invalid user id when trying to add\
@@ -287,12 +319,12 @@ describe("Add to line", () => {
 
 describe("Find position", () => {
     const missing_email = {
-        "missing_email": "You must provide an email for the search in the List!"
-    }
+        "missing_email": "You must provide an email for the search in the Line!"
+    };
     const invalid_user_email = {
         "invalid_user_email": "The user with the given email does not exists or is not on the Line!",
         "position": "undefined"
-    }
+    };
 
     it("Should return position 0 for the first user added to the Line", async () => {
         return chai
@@ -350,3 +382,85 @@ describe("Find position", () => {
             })
     });
 });
+
+describe("Filter line", () => {
+    const empty_gender_filter = {
+        "empty_gender_filter": "There is no person with this gender on the Line!"
+    };
+    const missing_gender = {
+        "missing_gender": "You must provide a gender for filtering the Line!"
+    };
+
+    // Stringfy and parse to create a deepCopy
+    let local_person_one: any = JSON.parse(JSON.stringify(person_one));
+    let local_person_two: any = JSON.parse(JSON.stringify(person_two));
+    let local_person_three: any = JSON.parse(JSON.stringify(person_three));
+    let local_person_four: any = JSON.parse(JSON.stringify(person_four));
+    local_person_one.position = 0;
+    local_person_two.position = 1;
+    local_person_three.position = 2;
+    local_person_three.gender = 'other';
+    local_person_four.position = 3;
+
+
+    it("Should return Person One for male gender filter", async () => {
+        return chai
+            .request(app)
+            .post("/filterLine")
+            .send({ "gender": "male" })
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.eql([local_person_one]);
+            })
+    });
+    it("Should return Person Three for other gender filter", async () => {
+        return chai
+            .request(app)
+            .post("/filterLine")
+            .send({ "gender": "other" })
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.eql([local_person_three]);
+            })
+    });
+    it("Should return Person Two and Person Four for female gender filter", async () => {
+        return chai
+            .request(app)
+            .post("/filterLine")
+            .send({ "gender": "female" })
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.eql([local_person_two, local_person_four]);
+            })
+    });
+
+    it("Should return empty_gender_filter for a gender filter\
+    \b\b\bthat does not have Persons with it", async () => {
+        return chai
+            .request(app)
+            .post("/filterLine")
+            .send({ "gender": "agender" })
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.eql(empty_gender_filter);
+            })
+    });
+    it("Should return missing_gender if no gender is given", async () => {
+        return chai
+            .request(app)
+            .post("/filterLine")
+            .send({})
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(400);
+                expect(json_string).to.eql([error_string, [missing_gender]]);
+            })
+    });
+});
+
+
+// TODO: separate procedures that will work from those that will go wrong
