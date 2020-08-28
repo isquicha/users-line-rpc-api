@@ -35,7 +35,7 @@ app.post("/createUser", (req, res) => {
     }
 
     if (error.has_error) {
-        res.status(400).json(["Your made a bad request!", error.error_list]);
+        res.status(400).json(["You made a bad request!", error.error_list]);
     }
     else {
         res.json(createUser(name, email, gender));
@@ -48,7 +48,23 @@ app.get("/listUsers", (req, res) => {
 
 app.post("/addToLine", (req, res) => {
     let id: number = req.body.id;
-    res.json(addToLine(id));
+
+    let error = {
+        "has_error": false,
+        "error_list": Array()
+    };
+    if (id == undefined) {
+        error.has_error = true;
+        error.error_list.push({
+            "missing_id": "You must provide an user id to be added to the line!"
+        })
+    }
+    if (error.has_error) {
+        res.status(400).json(["You made a bad request!", error.error_list]);
+    }
+    else {
+        res.json(addToLine(id));
+    }
 });
 
 app.post("/findPosition", (req, res) => {

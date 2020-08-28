@@ -5,13 +5,13 @@ import "mocha";
 
 chai.use(chaiHttp);
 const expect = chai.expect;
+let error_string = "You made a bad request!";
 
 describe("Create user", () => {
     let missing_email = { "missing_email": "You must provide a email for the user!" };
     let missing_name = { "missing_name": "You must provide a name for the user!" };
     let missing_gender = { "missing_gender": "You must provide a gender for the user!" };
     let user_exists = { "user_already_exists": "This user name or user email is already registered!" };
-    let error_string = "Your made a bad request!";
     let person_one = {
         "name": "Person One",
         "email": "personone@mail.com",
@@ -212,6 +212,9 @@ describe("Add to line", () => {
     const user_already_on_line = {
         "user_already_on_line": "This user is already on the Line!"
     }
+    const missing_id = {
+        "missing_id": "You must provide an user id to be added to the line!"
+    }
     it("Should return position 0 for the first user added to the Line", async () => {
         return chai
             .request(app)
@@ -269,4 +272,16 @@ describe("Add to line", () => {
                 expect(json_string).to.eql(user_already_on_line);
             });
     });
+    it("Should return missing_id if no id is given", async () => {
+        return chai
+            .request(app)
+            .post("/addToLine")
+            .send({})
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(400);
+                expect(json_string).to.deep.equal([error_string, [missing_id]]);
+            })
+    });
 });
+
