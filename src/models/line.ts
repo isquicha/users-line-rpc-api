@@ -2,7 +2,7 @@ import { User, getUser } from "./user";
 
 let line: any[] = [];
 const invalid_user_email = {
-    "invalid_user_email": "The user with the given email does not exists or is not on the line!",
+    "invalid_user_email": "The user with the given email does not exists or is not on the Line!",
     "position": "undefined"
 }
 const invalid_user_id = {
@@ -13,6 +13,9 @@ const user_already_on_line = {
 }
 const empty_line = {
     "empty_line": "The line is empty!"
+}
+const empty_gender_filter = {
+    "empty_gender_filter": "There is no person with this gender on the Line!"
 }
 
 export const findPosition = (user_email: string) => {
@@ -51,7 +54,7 @@ export const showLine = () => {
 }
 
 export const filterLine = (gender: string) => {
-    return line
+    const l = line
         .filter((user: User) => {
             return user.gender === gender;
         })
@@ -59,7 +62,11 @@ export const filterLine = (gender: string) => {
             let local_user: any = user;
             local_user.position = findPosition(user.email).position;
             return local_user;
-        })
+        });
+    if (l.length > 0) {
+        return l;
+    }
+    return empty_gender_filter;
 }
 
 export const popLine = () => {
