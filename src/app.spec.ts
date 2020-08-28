@@ -601,6 +601,15 @@ describe("Show line and pop line", () => {
                 expect(json_string).to.deep.equal(empty_line);
             })
     });
+    it("Should get empty_line when get /popLine with no users in Line", async () => {
+        return chai
+            .request(app)
+            .get("/popLine")
+            .then(res => {
+                let json_string = JSON.parse(res.text);
+                expect(res.status).to.eql(200);
+                expect(json_string).to.deep.equal(empty_line);
+            })
+    });
 
 });
-// TODO: separate procedures that will work from those that will go wrong
