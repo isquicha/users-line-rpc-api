@@ -9,12 +9,16 @@ const invalid_user_id = {
     "invalid_user_id": "The user with the given id does not exists!"
 }
 const user_already_on_line = {
-    "user_already_on_line": "This user is already on the Line"
+    "user_already_on_line": "This user is already on the Line!"
 }
-
+const empty_line = {
+    "empty_line": "The line is empty!"
+}
 
 export const findPosition = (user_email: string) => {
     let position = 0;
+    // for ... of scrolls through the list in order, so i don't have to 
+    // store the position of each user
     for (let user of line) {
         if (user.email == user_email) {
             return {
@@ -56,4 +60,13 @@ export const filterLine = (gender: string) => {
             local_user.position = findPosition(user.email).position;
             return local_user;
         })
+}
+
+export const popLine = () => {
+    const user: User = line[0];
+    if (user == undefined) {
+        return empty_line;
+    }
+    line.shift();
+    return user;
 }

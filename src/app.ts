@@ -1,6 +1,6 @@
 import express = require("express");
 import { createUser, listUsers } from "./models/user";
-import { addUserToLine, showLine, findPosition, filterLine } from "./models/line";
+import { addUserToLine, showLine, findPosition, filterLine, popLine } from "./models/line";
 
 const app = express();
 app.use(express.json());
@@ -43,7 +43,7 @@ app.post("/createUser", (req, res) => {
 });
 
 app.get("/listUsers", (req, res) => {
-    res.json(listUsers())
+    res.json(listUsers());
 });
 
 app.post("/addToLine", (req, res) => {
@@ -61,7 +61,11 @@ app.post("/filterLine", (req, res) => {
     res.json(filterLine(gender));
 });
 
+app.get("/popLine", (req, res) => {
+    res.json(popLine());
+});
+
 app.get("/showLine", (req, res) => {
-    res.json(showLine())
-})
+    res.json(showLine());
+});
 export default app;
