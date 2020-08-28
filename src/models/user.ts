@@ -30,6 +30,10 @@ class User {
             "gender": this.gender,
         };
     }
+
+    public get id() {
+        return this.#id;
+    }
 }
 
 const userExists = (name: string, email: string) => {
@@ -65,4 +69,12 @@ export const createUser = (name: string, email: string, gender: string) => {
 
 export const listUsers = () => {
     return user_list
+}
+
+export const getUser = (user_id: number) => {
+    for (let user of user_list) {
+        if (user.id === user_id) {
+            return user
+        }
+    }
 }
