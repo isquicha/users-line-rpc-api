@@ -50,7 +50,16 @@ export const addToLine = (user_id: number) => {
 }
 
 export const showLine = () => {
-    return line;
+    const l = line
+        .map((user: User) => {
+            let local_user: any = JSON.parse(JSON.stringify(user));
+            local_user.position = findPosition(user.email).position;
+            return local_user;
+        });
+    if (l.length > 0) {
+        return l;
+    }
+    return empty_line;
 }
 
 export const filterLine = (gender: string) => {
@@ -59,7 +68,7 @@ export const filterLine = (gender: string) => {
             return user.gender === gender;
         })
         .map((user: User) => {
-            let local_user: any = user;
+            let local_user: any = JSON.parse(JSON.stringify(user));
             local_user.position = findPosition(user.email).position;
             return local_user;
         });
